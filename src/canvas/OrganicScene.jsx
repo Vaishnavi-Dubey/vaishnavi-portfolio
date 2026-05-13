@@ -2,83 +2,102 @@ import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Float, Environment, MeshTransmissionMaterial } from '@react-three/drei';
 
-const OrganicShapes = () => {
-    const groupRef = useRef();
+/**
+ * OrganicScene — Floating glass orbs that subtly rotate with scroll.
+ * Uses the new violet/amber palette. Objects are positioned to
+ * create depth without blocking content.
+ */
 
-    useFrame((state) => {
-        if (!groupRef.current) return;
-        const scrollY = window.scrollY;
-        // Rotate smoothly based on scroll
-        groupRef.current.rotation.y = scrollY * 0.0005;
-        // Floating effect handling by Float component, no manual Y shift to prevent vanishing
-    });
+const GlassOrbs = () => {
+  const groupRef = useRef();
 
-    const glassMaterialProps = {
-        backside: true,
-        samples: 16,
-        resolution: 256,
-        transmission: 1,
-        thickness: 10,
-        roughness: 0.1, // Smooth glass
-        chromaticAberration: 0.05,
-        anisotropy: 1,
-        clearcoat: 1,
-        clearcoatRoughness: 0,
-        envMapIntensity: 1
-    };
+  useFrame((state) => {
+    if (!groupRef.current) return;
+    const scrollY = window.scrollY;
+    groupRef.current.rotation.y = scrollY * 0.0004;
+    groupRef.current.rotation.x = Math.sin(state.clock.getElapsedTime() * 0.1) * 0.05;
+  });
 
-    return (
-        <group ref={groupRef}>
-            {/* Glass Bubble 1 (Clear/Dark) */}
-            <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1.5}>
-                <mesh position={[0, 0, -2]}>
-                    <sphereGeometry args={[1.5, 64, 64]} />
-                    <MeshTransmissionMaterial
-                        {...glassMaterialProps}
-                        color="#ffffff"
-                        thickness={15}
-                    />
-                </mesh>
-            </Float>
+  const glassMaterial = {
+    backside: true,
+    samples: 16,
+    resolution: 256,
+    transmission: 1,
+    thickness: 12,
+    roughness: 0.08,
+    chromaticAberration: 0.04,
+    anisotropy: 1,
+    clearcoat: 1,
+    clearcoatRoughness: 0,
+    envMapIntensity: 1.2,
+  };
 
-            {/* Glass Bubble 2 (Lavender Tint) */}
-            <Float speed={2} rotationIntensity={0.6} floatIntensity={2}>
-                <mesh position={[3, 2, -4]}>
-                    <sphereGeometry args={[1, 64, 64]} />
-                    <MeshTransmissionMaterial
-                        {...glassMaterialProps}
-                        color="#b8b2ff"
-                        thickness={8}
-                    />
-                </mesh>
-            </Float>
+  return (
+    <group ref={groupRef}>
+      {/* Primary orb — violet tint */}
+      <Float speed={1.2} rotationIntensity={0.4} floatIntensity={1.5}>
+        <mesh position={[2, 0.5, -3]}>
+          <sphereGeometry args={[1.2, 64, 64]} />
+          <MeshTransmissionMaterial
+            {...glassMaterial}
+            color="#7c3aed"
+            thickness={15}
+          />
+        </mesh>
+      </Float>
 
-            {/* Glass Bubble 3 (Mint Tint) */}
-            <Float speed={2.5} rotationIntensity={0.4} floatIntensity={1.8}>
-                <mesh position={[-3, -2, -3]}>
-                    <sphereGeometry args={[0.8, 64, 64]} />
-                    <MeshTransmissionMaterial
-                        {...glassMaterialProps}
-                        color="#b2ffdb"
-                        thickness={6}
-                    />
-                </mesh>
-            </Float>
-        </group>
-    );
+      {/* Secondary orb — amber tint */}
+      <Float speed={1.8} rotationIntensity={0.5} floatIntensity={2}>
+        <mesh position={[-3, 2, -5]}>
+          <sphereGeometry args={[0.8, 64, 64]} />
+          <MeshTransmissionMaterial
+            {...glassMaterial}
+            color="#f59e0b"
+            thickness={8}
+          />
+        </mesh>
+      </Float>
+
+      {/* Tertiary orb — clear/white */}
+      <Float speed={2.2} rotationIntensity={0.3} floatIntensity={1.8}>
+        <mesh position={[-1.5, -2, -4]}>
+          <sphereGeometry args={[0.6, 64, 64]} />
+          <MeshTransmissionMaterial
+            {...glassMaterial}
+            color="#e2e8f0"
+            thickness={6}
+          />
+        </mesh>
+      </Float>
+
+      {/* Small accent orb */}
+      <Float speed={3} rotationIntensity={0.6} floatIntensity={2.5}>
+        <mesh position={[3.5, -1.5, -6]}>
+          <sphereGeometry args={[0.4, 32, 32]} />
+          <MeshTransmissionMaterial
+            {...glassMaterial}
+            color="#a78bfa"
+            thickness={5}
+            chromaticAberration={0.08}
+          />
+        </mesh>
+      </Float>
+    </group>
+  );
 };
 
 const OrganicScene = () => {
-    return (
-        <group>
-            <OrganicShapes />
-            {/* Soft Studio Lighting */}
-            <Environment preset="studio" />
-            <ambientLight intensity={0.4} />
-            <pointLight position={[10, 10, 10]} intensity={0.5} color="#ffffff" />
-            <pointLight position={[-10, -5, -5]} intensity={0.2} color="#b8b2ff" />
-        </group>
-    );
+  return (
+    <group>
+      <GlassOrbs />
+      {/* Moody lighting — not generic "studio" */}
+      <Environment preset="night" />
+      <ambientLight intensity={0.3} />
+      <pointLight position={[10, 10, 10]} intensity={0.4} color="#ffffff" />
+      <pointLight position={[-8, -4, -4]} intensity={0.2} color="#7c3aed" />
+      <pointLight position={[5, -8, 3]} intensity={0.1} color="#f59e0b" />
+    </group>
+  );
 };
 
 export default OrganicScene;

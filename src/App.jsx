@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Lenis from 'lenis';
 import Navbar from './components/Navbar';
 import Cursor from './components/Cursor';
 import Scene from './canvas/Scene';
+import ScrollReveal from './components/ScrollReveal';
 import './index.css';
 
 import Hero from './sections/Hero';
@@ -13,10 +14,12 @@ import Experience from './sections/Experience';
 import Education from './sections/Education';
 import Achievements from './sections/Achievements';
 import Contact from './sections/Contact';
+import Footer from './sections/Footer';
 
 function App() {
+  const lenisRef = useRef(null);
+
   useEffect(() => {
-    // ... same lenis
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -27,6 +30,8 @@ function App() {
       smoothTouch: false,
       touchMultiplier: 2,
     });
+
+    lenisRef.current = lenis;
 
     function raf(time) {
       lenis.raf(time);
@@ -58,7 +63,10 @@ function App() {
         <Education />
         <Achievements />
         <Contact />
+        <Footer />
       </div>
+
+      <ScrollReveal />
     </main>
   );
 }

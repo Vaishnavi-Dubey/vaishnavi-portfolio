@@ -1,60 +1,78 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 
+/**
+ * Cursor — Dual-element cursor system:
+ *   • Inner dot: snappy, follows cursor tightly
+ *   • Outer ring: floaty, trails behind with spring physics
+ *   • Ring expands on interactive element hover
+ *   • Hidden on touch devices
+ */
 const Cursor = () => {
-    const [isHovered, setIsHovered] = useState(false);
+  const dotX = useMotionValue(0);
+  const dotY = useMotionValue(0);
 
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
+  // Outer ring uses softer springs for trailing effect
+  const ringX = useSpring(dotX, { damping: 30, stiffness: 200 });
+  const ringY = useSpring(dotY, { damping: 30, stiffness: 200 });
 
-    const springConfig = { damping: 25, stiffness: 700 };
-    const cursorX = useSpring(mouseX, springConfig);
-    const cursorY = useSpring(mouseY, springConfig);
+  useEffect(() => {
+    // Hide on touch-only devices
+    const isTouchDevice = 'ontouchstart' in window && navigator.maxTouchPoints > 0;
+    if (isTouchDevice) {
+      document.querySelectorAll('.cursor-dot, .cursor-ring').forEach(el => {
+        el.style.display = 'none';
+      });
+      return;
+    }
 
-    useEffect(() => {
-        const moveCursor = (e) => {
-            mouseX.set(e.clientX - 16);
-            mouseY.set(e.clientY - 16);
-        };
+    const moveCursor = (e) => {
+      dotX.set(e.clientX);
+      dotY.set(e.clientY);
+    };
 
-        const handleMouseOver = (e) => {
-            if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('a') || e.target.closest('button')) {
-                setIsHovered(true);
-            } else {
-                setIsHovered(false);
-            }
-        };
+    const ring = document.querySelector('.cursor-ring');
 
-        window.addEventListener('mousemove', moveCursor);
-        window.addEventListener('mouseover', handleMouseOver);
+    const handleOver = (e) => {
+      const target = e.target;
+      if (target.closest('a') || target.closest('button') || target.tagName === 'A' || target.tagName === 'BUTTON') {
+        ring?.classList.add('hovered');
+      } else {
+        ring?.classList.remove('hovered');
+      }
+    };
 
-        return () => {
-            window.removeEventListener('mousemove', moveCursor);
-            window.removeEventListener('mouseover', handleMouseOver);
-        };
-    }, [mouseX, mouseY]);
+    window.addEventListener('mousemove', moveCursor, { passive: true });
+    window.addEventListener('mouseover', handleOver, { passive: true });
 
-    return (
-        <motion.div
-            className="cursor"
-            animate={{
-                scale: isHovered ? 1.5 : 1,
-            }}
-            transition={{ type: 'spring', damping: 20, stiffness: 400 }}
-            style={{
-                translateX: cursorX,
-                translateY: cursorY,
-                mixBlendMode: 'normal', // Reset blend mode for lens effect
-                background: 'rgba(255, 255, 255, 0.05)', // Very subtle tint
-                backdropFilter: 'blur(0px)', // Keep view clear
-                border: '1px solid rgba(255, 255, 255, 0.8)', // Sharp rim
-                boxShadow: isHovered
-                    ? '0 0 15px rgba(255, 255, 255, 0.3), inset 0 0 0 2px rgba(255,255,255,0.1)'
-                    : 'none', // Lens glow on hover
-                zIndex: 9999
-            }}
-        />
-    );
+    return () => {
+      window.removeEventListener('mousemove', moveCursor);
+      window.removeEventListener('mouseover', handleOver);
+    };
+  }, [dotX, dotY]);
+
+  return (
+    <>
+      <motion.div
+        className="cursor-dot"
+        style={{
+          translateX: dotX,
+          translateY: dotY,
+          x: '-50%',
+          y: '-50%',
+        }}
+      />
+      <motion.div
+        className="cursor-ring"
+        style={{
+          translateX: ringX,
+          translateY: ringY,
+          x: '-50%',
+          y: '-50%',
+        }}
+      />
+    </>
+  );
 };
 
 export default Cursor;
