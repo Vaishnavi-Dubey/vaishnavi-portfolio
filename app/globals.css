@@ -1,0 +1,361 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ----------------------------------------------------------------
+   "A Day in the Studio" — an illustrated, time-of-day portfolio.
+   Midnight indigo base, golden-hour sun accent, plus a semantic
+   chapter palette so every section feels like a different time
+   of day with its own emotional temperature.
+   Color psychology:
+     gold     = warmth, optimism, beginnings (hero, contact)
+     blush    = welcome, intimacy        (chapter I — about)
+     lavender = memory, reflection       (chapter II — timeline)
+     coral    = energy, doing            (chapter III — projects)
+     sage     = growth, the living craft (chapter IV — pulse)
+   ---------------------------------------------------------------- */
+:root,
+:root[data-theme="dark"] {
+  --color-base: 11 16 43;          /* deep midnight indigo */
+  --color-surface: 22 30 71;
+  --color-surface-2: 35 46 95;
+  --color-ink: 250 245 228;        /* warm moonlit white */
+  --color-muted: 154 165 201;
+  --color-line: 46 57 110;
+  --color-accent: 255 193 94;      /* golden hour sun */
+  --color-accent-soft: 255 220 150;
+  --color-accent-glow: 255 230 170;
+
+  /* Chapter colors — semantic, color-coded sections */
+  --c-blush: 244 166 166;
+  --c-lavender: 183 156 237;
+  --c-coral: 255 107 107;
+  --c-sage: 148 201 169;
+  --c-gold: 255 193 94;
+
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --color-base: 248 244 232;       /* sun-bleached paper */
+  --color-surface: 255 251 240;
+  --color-surface-2: 238 232 216;
+  --color-ink: 22 28 56;
+  --color-muted: 96 108 140;
+  --color-line: 214 206 184;
+  --color-accent: 218 138 32;
+  --color-accent-soft: 232 168 70;
+  --color-accent-glow: 218 138 32;
+
+  --c-blush: 200 112 112;
+  --c-lavender: 124 96 198;
+  --c-coral: 214 70 70;
+  --c-sage: 86 152 110;
+  --c-gold: 218 138 32;
+
+  color-scheme: light;
+}
+
+:root[data-theme="hacker"] {
+  --color-base: 0 0 0;
+  --color-surface: 5 14 5;
+  --color-surface-2: 10 24 10;
+  --color-ink: 0 255 102;          /* terminal green */
+  --color-muted: 0 180 75;
+  --color-line: 0 120 50;
+  --color-accent: 0 255 102;
+  --color-accent-soft: 80 255 140;
+  --color-accent-glow: 160 255 200;
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  body {
+    @apply bg-base text-ink font-body antialiased;
+    font-feature-settings: "ss01", "ss02", "cv11", "onum";
+    /* The sky behind the studio — a soft night-into-dawn wash. */
+    background-image:
+      radial-gradient(ellipse 1200px 800px at 80% -20%, rgb(var(--c-gold) / 0.18), transparent 55%),
+      radial-gradient(ellipse 900px 700px at 10% 30%, rgb(var(--c-lavender) / 0.10), transparent 60%),
+      radial-gradient(ellipse 1100px 600px at 50% 110%, rgb(var(--c-coral) / 0.08), transparent 60%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+    font-feature-settings: "ss01", "ss02";
+    letter-spacing: -0.012em;
+  }
+  section {
+    scroll-margin-top: 5rem;
+  }
+  ::selection {
+    background: rgb(var(--color-accent) / 0.85);
+    color: rgb(var(--color-base));
+  }
+  /* Only hide the system cursor once our custom one has mounted */
+  @media (pointer: fine) {
+    body[data-cursor-ready="true"],
+    body[data-cursor-ready="true"] a,
+    body[data-cursor-ready="true"] button,
+    body[data-cursor-ready="true"] [role="button"],
+    body[data-cursor-ready="true"] label {
+      cursor: none;
+    }
+    /* Always keep the native cursor inside text inputs */
+    input, textarea, select { cursor: text; }
+  }
+}
+
+[data-theme="hacker"] body {
+  @apply font-mono;
+  text-shadow: 0 0 6px rgb(var(--color-accent) / 0.5);
+}
+[data-theme="hacker"] h1,
+[data-theme="hacker"] h2,
+[data-theme="hacker"] h3 {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+@layer utilities {
+  .text-display-italic {
+    font-style: italic;
+    font-weight: 400;
+    color: rgb(var(--color-accent));
+  }
+  .text-gradient-accent { color: rgb(var(--color-accent)); }
+  .text-gradient-cyan   { color: rgb(var(--color-accent)); }
+
+  /* Handwritten marginalia */
+  .handwritten {
+    font-family: var(--font-hand), "Caveat", "Brush Script MT", cursive;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.15;
+  }
+
+  /* Highlighter mark */
+  .highlight {
+    background-image: linear-gradient(
+      to top,
+      rgb(var(--color-accent) / 0.45) 0%,
+      rgb(var(--color-accent) / 0.45) 38%,
+      transparent 38%
+    );
+    padding: 0 0.15em;
+  }
+
+  /* Hand-drawn squiggle underline */
+  .wavy {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8' preserveAspectRatio='none'><path d='M0 4 Q 15 0 30 4 T 60 4 T 90 4 T 120 4' fill='none' stroke='rgb(255,193,94)' stroke-width='2' stroke-linecap='round'/></svg>");
+    background-repeat: repeat-x;
+    background-position: 0 100%;
+    background-size: 120px 8px;
+    padding-bottom: 6px;
+  }
+
+  /* ====== AURA — soft colored halo behind elements ====== */
+  .aura-gold    { box-shadow: 0 0 0 1px rgb(var(--c-gold) / 0.18),    0 20px 80px -20px rgb(var(--c-gold) / 0.55); }
+  .aura-blush   { box-shadow: 0 0 0 1px rgb(var(--c-blush) / 0.18),   0 20px 80px -20px rgb(var(--c-blush) / 0.55); }
+  .aura-coral   { box-shadow: 0 0 0 1px rgb(var(--c-coral) / 0.18),   0 20px 80px -20px rgb(var(--c-coral) / 0.55); }
+  .aura-lavender{ box-shadow: 0 0 0 1px rgb(var(--c-lavender) / 0.18),0 20px 80px -20px rgb(var(--c-lavender) / 0.55); }
+  .aura-sage    { box-shadow: 0 0 0 1px rgb(var(--c-sage) / 0.18),    0 20px 80px -20px rgb(var(--c-sage) / 0.55); }
+
+  /* ====== LIGHT RAYS — slowly rotating godrays ====== */
+  .light-rays {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: conic-gradient(
+      from 200deg at 80% 0%,
+      transparent 0deg,
+      rgb(var(--c-gold) / 0.18) 6deg,
+      transparent 12deg,
+      rgb(var(--c-gold) / 0.10) 22deg,
+      transparent 30deg,
+      rgb(var(--c-gold) / 0.16) 45deg,
+      transparent 55deg,
+      rgb(var(--c-gold) / 0.08) 70deg,
+      transparent 80deg
+    );
+    mask-image: radial-gradient(ellipse at 80% 0%, black 0%, transparent 60%);
+    -webkit-mask-image: radial-gradient(ellipse at 80% 0%, black 0%, transparent 60%);
+    animation: rays 28s linear infinite;
+    mix-blend-mode: screen;
+    filter: blur(2px);
+  }
+  @keyframes rays {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(8deg); }
+  }
+
+  /* ====== TWINKLING STARS background ====== */
+  .stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%,  rgb(var(--color-ink) / 0.55), transparent 50%),
+      radial-gradient(1px 1px at 70% 20%,  rgb(var(--color-ink) / 0.40), transparent 50%),
+      radial-gradient(1.5px 1.5px at 40% 70%, rgb(var(--c-gold) / 0.70), transparent 50%),
+      radial-gradient(1px 1px at 85% 60%,  rgb(var(--color-ink) / 0.45), transparent 50%),
+      radial-gradient(1px 1px at 10% 85%,  rgb(var(--color-ink) / 0.55), transparent 50%),
+      radial-gradient(1.5px 1.5px at 60% 90%, rgb(var(--c-lavender) / 0.55), transparent 50%),
+      radial-gradient(1px 1px at 90% 35%,  rgb(var(--color-ink) / 0.45), transparent 50%);
+    animation: twinkle 6s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    0%   { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+
+  /* ====== CHAPTER tints — subtle radial wash matching each section's color ====== */
+  .tint-blush::before,
+  .tint-lavender::before,
+  .tint-coral::before,
+  .tint-sage::before,
+  .tint-gold::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .tint-blush::before    { background: radial-gradient(ellipse 900px 500px at 20% 0%, rgb(var(--c-blush) / 0.14),    transparent 60%); }
+  .tint-lavender::before { background: radial-gradient(ellipse 900px 500px at 80% 0%, rgb(var(--c-lavender) / 0.16), transparent 60%); }
+  .tint-coral::before    { background: radial-gradient(ellipse 900px 500px at 30% 0%, rgb(var(--c-coral) / 0.12),    transparent 60%); }
+  .tint-sage::before     { background: radial-gradient(ellipse 900px 500px at 70% 0%, rgb(var(--c-sage) / 0.14),     transparent 60%); }
+  .tint-gold::before     { background: radial-gradient(ellipse 900px 500px at 50% 0%, rgb(var(--c-gold) / 0.14),     transparent 60%); }
+
+  /* Chapter accent helpers — color the kicker/dot for each chapter */
+  .ch-blush    { --ch: var(--c-blush); }
+  .ch-lavender { --ch: var(--c-lavender); }
+  .ch-coral    { --ch: var(--c-coral); }
+  .ch-sage     { --ch: var(--c-sage); }
+  .ch-gold     { --ch: var(--c-gold); }
+  .text-ch     { color: rgb(var(--ch)); }
+  .bg-ch       { background-color: rgb(var(--ch)); }
+  .border-ch   { border-color: rgb(var(--ch) / 0.55); }
+  .ring-ch     { box-shadow: 0 0 0 1px rgb(var(--ch) / 0.45); }
+
+  /* Section labels */
+  .kicker {
+    @apply inline-flex items-center gap-3 font-mono text-[11px] uppercase text-muted;
+    letter-spacing: 0.22em;
+  }
+  .kicker::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: rgb(var(--ch, var(--color-accent)));
+  }
+
+  /* Soft paper-dot background */
+  .bg-grid {
+    background-image:
+      radial-gradient(rgb(var(--color-line) / 0.55) 1px, transparent 1px);
+    background-size: 22px 22px;
+    background-position: 0 0;
+    mask-image: radial-gradient(ellipse at center, black 35%, transparent 80%);
+  }
+
+  /* Ruled-paper background for notebook bits */
+  .ruled {
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(1.7em - 1px),
+      rgb(var(--color-line) / 0.35) calc(1.7em - 1px),
+      rgb(var(--color-line) / 0.35) 1.7em
+    );
+    background-size: 100% 1.7em;
+  }
+
+  /* Drop cap */
+  .dropcap::first-letter {
+    font-family: var(--font-display), serif;
+    font-style: italic;
+    font-weight: 400;
+    float: left;
+    font-size: 4.6em;
+    line-height: 0.86;
+    padding: 0.05em 0.12em 0 0;
+    color: rgb(var(--ch, var(--color-accent)));
+  }
+
+  /* Hairline rule with chapter-color leader */
+  .rule {
+    position: relative;
+    height: 1px;
+    background: rgb(var(--color-line) / 0.6);
+  }
+  .rule::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 56px;
+    background: rgb(var(--ch, var(--color-accent)));
+  }
+
+  /* Slight handmade rotations */
+  .tilt-l  { transform: rotate(-0.6deg); }
+  .tilt-r  { transform: rotate(0.5deg); }
+  .tilt-ll { transform: rotate(-1.4deg); }
+
+  /* Paper-tape strip */
+  .tape { position: relative; }
+  .tape::before {
+    content: "";
+    position: absolute;
+    top: -14px; left: 50%;
+    width: 90px; height: 22px;
+    transform: translateX(-50%) rotate(-3deg);
+    background: rgb(var(--color-accent) / 0.55);
+    border-left: 1px dashed rgb(var(--color-ink) / 0.1);
+    border-right: 1px dashed rgb(var(--color-ink) / 0.1);
+    backdrop-filter: blur(2px);
+  }
+
+  /* Icon "chip" — small rounded square holding an SVG icon, chapter-colored */
+  .icon-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: rgb(var(--ch, var(--color-accent)) / 0.14);
+    color: rgb(var(--ch, var(--color-accent)));
+    border: 1px solid rgb(var(--ch, var(--color-accent)) / 0.35);
+  }
+
+  /* Floating animation for the moon/sun/objects */
+  .float-slow { animation: floatY 7s ease-in-out infinite; }
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-12px); }
+  }
+
+  .glass {
+    background: rgb(var(--color-surface) / 0.55);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgb(var(--color-line) / 0.55);
+  }
+
+  .text-balance { text-wrap: balance; }
+  .text-pretty  { text-wrap: pretty; }
+  .nums { font-variant-numeric: tabular-nums; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
