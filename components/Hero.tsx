@@ -80,7 +80,7 @@ export default function Hero() {
             as="p"
             className="mt-8 flex flex-wrap items-baseline gap-2 font-mono text-xs uppercase tracking-[0.22em] text-muted"
           >
-            <span className="text-ch">// today, I&rsquo;m</span>
+            <span className="text-ch">{"// today, I’m"}</span>
             <Typewriter />
           </RevealItem>
 

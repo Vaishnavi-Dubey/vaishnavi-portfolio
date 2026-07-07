@@ -21,10 +21,20 @@ export default function StudioScene() {
   const sy = useSpring(my, { stiffness: 60, damping: 18, mass: 0.6 });
 
   // Per-layer translate amounts (px). Smaller = further back.
-  const layer = (depth: number) => ({
-    x: useTransform(sx, (v) => v * depth),
-    y: useTransform(sy, (v) => v * depth * 0.6),
-  });
+  const skyX = useTransform(sx, (v) => v * 8);
+  const skyY = useTransform(sy, (v) => v * 8 * 0.6);
+
+  const sunX = useTransform(sx, (v) => v * 16);
+  const sunY = useTransform(sy, (v) => v * 16 * 0.6);
+
+  const windowX = useTransform(sx, (v) => v * 4);
+  const windowY = useTransform(sy, (v) => v * 4 * 0.6);
+
+  const deskX = useTransform(sx, (v) => v * -6);
+  const deskY = useTransform(sy, (v) => v * -6 * 0.6);
+
+  const laptopX = useTransform(sx, (v) => v * -12);
+  const laptopY = useTransform(sy, (v) => v * -12 * 0.6);
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
@@ -40,11 +50,11 @@ export default function StudioScene() {
     return () => window.removeEventListener("mousemove", onMove);
   }, [mx, my]);
 
-  const sky = layer(8);     // sky stars - barely move
-  const sun = layer(16);    // sun - medium parallax
-  const window_ = layer(4); // window frame - subtle
-  const desk = layer(-6);   // desk - slight inverse for depth
-  const laptop = layer(-12);// laptop nearest - inverse, stronger
+  const sky = { x: skyX, y: skyY };
+  const sun = { x: sunX, y: sunY };
+  const window_ = { x: windowX, y: windowY };
+  const desk = { x: deskX, y: deskY };
+  const laptop = { x: laptopX, y: laptopY };
 
   return (
     <div

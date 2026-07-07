@@ -18,7 +18,12 @@ npm install
 npm run dev
 ```
 
-Open <http://localhost:3000>.
+## 📸 Screenshots
+
+### Portfolio Home View
+![Portfolio Home View](docs/images/home.png)
+
+---
 
 ## 🔑 Optional environment variables
 
